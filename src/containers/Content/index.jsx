@@ -1,10 +1,9 @@
 import React from 'react';
 import {
-  Typography,
   Paper,
 } from '@material-ui/core';
-import ReactMarkdown from 'react-markdown';
 import { getContent } from './getContent';
+import ContentComponent from '../../components/Content';
 
 const Content = ({ name, location }) => {
 
@@ -20,11 +19,8 @@ const Content = ({ name, location }) => {
   }
 
   return (
-    <Paper style={{ maxWidth: 1200, margin: 'auto', padding: 20 }}>
-      <Typography variant="h3" >{name}</Typography>
-      <Typography>
-        <ReactMarkdown source={contentValue} />
-      </Typography>
+    <Paper style={{ maxWidth: 1200, margin: 'auto', padding: 20, marginTop: 20 }}>
+      <ContentComponent name={name} value={contentValue} />
     </Paper>
   );
 }
