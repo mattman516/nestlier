@@ -1,0 +1,8 @@
+type Post @model
+  @key(name: "userLocation", fields: ["user", "location"], queryField: "userLocation")
+  {
+    id: ID!
+    user: String!
+    location: String!
+    value: String
+  }

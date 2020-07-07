@@ -1,0 +1,15 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-nestlier-dev-82904-authRole",
+            "UnauthRoleArn": "arn:aws:iam::172885992056:role/amplify-nestlier-dev-82904-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::172885992056:role/amplify-nestlier-dev-82904-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-nestlier-dev-82904-deployment",
+            "UnauthRoleName": "amplify-nestlier-dev-82904-unauthRole",
+            "StackName": "amplify-nestlier-dev-82904",
+            "StackId": "arn:aws:cloudformation:us-east-1:172885992056:stack/amplify-nestlier-dev-82904/73502b30-c04d-11ea-92ff-12305fa4f4bd",
+            "AmplifyAppId": "d3anfs6omjp1av"
+        }
+    }
+}

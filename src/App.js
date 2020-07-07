@@ -4,11 +4,12 @@ import {
   Typography,
   createMuiTheme,
   ThemeProvider,
-  Paper,
   Box
 } from '@material-ui/core';
 import { yellow } from '@material-ui/core/colors';
-import ReactMarkdown from 'react-markdown';
+import Content from './containers/Content';
+import Amplify, { Auth } from 'aws-amplify';
+import awsconfig from './aws-exports';
 
 const backgroundStyle = {
   /* The image used */
@@ -54,6 +55,7 @@ const theme = createMuiTheme({
 });
 
 function App() {
+Amplify.configure(awsconfig);
   const [vis, setVis] = React.useState(false);
   React.useEffect(() => {
     setTimeout(() => {
@@ -106,12 +108,7 @@ function App() {
           </div>
         </Box>
         <Box style={fadeStyle} />
-        <Paper style={{ maxWidth: 1200, margin: 'auto', padding: 20 }}>
-          <Typography variant="h3" >Info</Typography>
-          <Typography>
-            <ReactMarkdown source={"## test"} />
-          </Typography>
-        </Paper>
+        <Content name={'info'} location={'home'} />
       </ThemeProvider>
 
     </div>
