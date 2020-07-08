@@ -2,7 +2,6 @@ import { updatePost } from '../../graphql/mutations';
 import { API, graphqlOperation } from 'aws-amplify';
 
 export const publishContent = async (input) => {
-    console.log(input);
     delete input.updatedAt;
     delete input.createdAt;
     const post = await API.graphql(

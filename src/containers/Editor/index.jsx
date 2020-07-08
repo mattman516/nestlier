@@ -4,6 +4,7 @@ import image from '../../nestlier1.jpg';
 import NestlierBar from '../../components/AppBar';
 import { getPageInfo } from './getPageInfo';
 import { publishPageInfo } from './updatePageInfo';
+import { createContent } from './createContent';
 import {
   DialogActions,
   Button,
@@ -42,6 +43,7 @@ const Page = (props) => {
   const [pageInfo, setPageInfo] = React.useState({});
   const [initialPageInfo, setInitialPageInfo] = React.useState({});
   const [loading, setLoading] = React.useState(false);
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
 
 
   React.useEffect(() => {
@@ -50,28 +52,36 @@ const Page = (props) => {
 
   const fetch = async () => {
     const info = await getPageInfo();
-    const pages = Object.keys(info.pages).map(p => info.pages[p]);
-    setPages(pages);
-    console.log(info.pages[location])
-    setPageInfo(info.pages[location])
-    setInitialPageInfo(info.pages[location])
+    updateState(info);
   }
 
   const updatePageInfo = (key) => (e) => {
+    setButtonDisabled(false);
     const newPageInfo = { ...pageInfo };
     newPageInfo[key] = e.target.value;
     setPageInfo(newPageInfo);
   }
 
-  const publish = () => {
-    publishPageInfo(pageInfo, location);
+  const updateState = (newInfo) => {
+    let pages = Object.keys(newInfo.pages).map(p => newInfo.pages[p]);
+    pages = pages.map(p => ({ ...p, url: `/edit${p.url}` }))
+    setPages(pages);
+    setPageInfo(newInfo.pages[location])
+    setInitialPageInfo(newInfo.pages[location])
+    setButtonDisabled(true);
+  }
+
+  const publish = async () => {
+    setLoading(true);
+    const updated = await publishPageInfo(pageInfo, location);
+    updateState(updated);
+    setLoading(false);
   }
 
   return (
     <>
       <AppBar>
-
-        <Button variant="contained" color="primary" onClick={publish}>
+        <Button disabled={buttonDisabled} onClick={publish}>
           {loading ? <CircularProgress size="small" /> : 'Publish' }
         </Button>
       </AppBar>
@@ -95,15 +105,15 @@ const Page = (props) => {
       <NestlierBar pages={pages}/>
       {(pageInfo.content || []).map(c => {
         return (
-          <Content key={c.name} name={c.name} location={location} />
+          <Content key={c.name} name={c.name} location={location} onDelete={updatePageInfo('content')} pageInfo={pageInfo} />
         )
       })}
-      <AddContentButton content={pageInfo['content']} onChange={updatePageInfo('content')} />
+      <AddContentButton pageInfo={pageInfo} onChange={updatePageInfo('content')} location={location} />
     </>
   );
 }
 
-export const AddContentButton = ({content, onChange}) => {
+export const AddContentButton = ({pageInfo, onChange, location}) => {
 
   const [addContentOpen, setAddContentOpen] = React.useState(false);
   const [name, setName] = React.useState('');
@@ -116,9 +126,10 @@ export const AddContentButton = ({content, onChange}) => {
     setName(e.target.value);
   }
 
-  const addContent = () => {
-    content.push({ name, value: '' })
-    const e = { target: { value: content } }
+  const addContent = async () => {
+    pageInfo.content.push({ name })
+    const e = { target: { value: pageInfo.content } }
+    await createContent(location, name);
     onChange(e);
     toggleAddContent();
   }

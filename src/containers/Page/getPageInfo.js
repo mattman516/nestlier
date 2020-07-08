@@ -6,6 +6,5 @@ export const getPageInfo = async () => {
         graphqlOperation(userLocation, { user: 'nestlier', location: { eq: 'pageinfo' }  })
     );
     const data = pageinfo.data.userLocation.items[0].value;
-    console.log(data);
     return JSON.parse(data);
 }

@@ -15,5 +15,6 @@ export const publishPageInfo = async (info, location) => {
     const post = await API.graphql(
         graphqlOperation(updatePost, { input } )
     );
-    return post.data.updatePost;
+    console.log(JSON.parse(post.data.updatePost.value));
+    return JSON.parse(post.data.updatePost.value);
 }

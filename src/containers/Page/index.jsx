@@ -43,7 +43,6 @@ const Page = (props) => {
     const info = await getPageInfo();
     const pages = Object.keys(info.pages).map(p => info.pages[p]);
     setPages(pages);
-    console.log(info.pages[location])
     setPageInfo(info.pages[location])
   }
 

@@ -9,8 +9,9 @@ import {
 import Content from '../../components/Content';
 import { getContent } from './getContent';
 import { publishContent } from './publishContent';
+import { deleteContent } from './deleteContent';
 
-const ContentEditorContainer = ({ name, location }) => {
+const ContentEditorContainer = ({ name, location, onDelete, pageInfo }) => {
 
   const [content, setContent] = React.useState({});
   const [initialContent, setInitialContent] = React.useState({})
@@ -46,6 +47,7 @@ const ContentEditorContainer = ({ name, location }) => {
   return (
     <Paper style={{ maxWidth: 1200, margin: 'auto', padding: 20, marginTop: 20, display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Delete {...{ content, onDelete, name, pageInfo }}/>
         <Preview content={content} />
         <Button variant="contained" color="primary" disabled={isChanged} onClick={publish}>
           {loading ? <CircularProgress size="small" /> : 'Publish' }
@@ -77,6 +79,18 @@ const Preview = ({content}) => {
       <Dialog open={showPreview} onClose={togglePreview} >
         <Content name={content.name} value={content.value} />
       </Dialog>
+    </>
+  );
+}
+
+const Delete = ({content, onDelete, name, pageInfo}) => {
+  const triggerDelete = () => {
+    deleteContent(content.id);
+    onDelete({ target: { value: pageInfo.content.filter(c => c.name !== name) }});
+  }
+  return (
+    <>
+      <Button color="error" onClick={triggerDelete}>Delete</Button>
     </>
   );
 }
