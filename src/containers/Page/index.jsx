@@ -41,7 +41,8 @@ const Page = (props) => {
 
   const fetch = async () => {
     const info = await getPageInfo();
-    const pages = Object.keys(info.pages).map(p => info.pages[p]);
+    let pages = Object.keys(info.pages).map(p => info.pages[p]);
+    pages = pages.map(p => ({ ...p, url: `/page${p.url}` }))
     setPages(pages);
     setPageInfo(info.pages[location])
   }

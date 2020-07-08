@@ -54,7 +54,7 @@ Amplify.configure(awsconfig);
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
-          <Route exact path="/:location" >
+          <Route exact path="/page/:location" >
             <Page />
           </Route>
           <Route exact path="/edit/:location" >
