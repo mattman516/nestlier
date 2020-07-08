@@ -52,12 +52,12 @@ Amplify.configure(awsconfig);
       <Router history={history} >
         <ThemeProvider theme={theme}>
           <Route exact path="/">
-            <Redirect to="/home" />
+            <Redirect to="/page/home" />
           </Route>
-          <Route exact path="/page/:location" >
+          <Route path="/page/:location" >
             <Page />
           </Route>
-          <Route exact path="/edit/:location" >
+          <Route path="/edit/:location" >
             <Editor />
           </Route>
         </ThemeProvider>
