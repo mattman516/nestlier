@@ -13,6 +13,8 @@ import {
   TextField,
   CircularProgress,
   AppBar,
+  Toolbar,
+  Typography,
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
@@ -41,7 +43,6 @@ const Page = (props) => {
   const { location } = props.match.params;
   const [pages, setPages] = React.useState([]);
   const [pageInfo, setPageInfo] = React.useState({});
-  const [initialPageInfo, setInitialPageInfo] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const [buttonDisabled, setButtonDisabled] = React.useState(true);
 
@@ -53,49 +54,47 @@ const Page = (props) => {
   const fetch = async () => {
     const info = await getPageInfo();
     updateState(info);
+    setButtonDisabled(true);
   }
 
   const updatePageInfo = (key) => (e) => {
     setButtonDisabled(false);
     const newPageInfo = { ...pageInfo };
-    newPageInfo[key] = e.target.value;
+    newPageInfo.pages[location][key] = e.target.value;
     setPageInfo(newPageInfo);
   }
 
   const updateState = (newInfo) => {
+    setButtonDisabled(false);
     let pages = Object.keys(newInfo.pages).map(p => newInfo.pages[p]);
     pages = pages.map(p => ({ ...p, url: `/edit${p.url}` }))
     setPages(pages);
-    setPageInfo(newInfo.pages[location])
-    setInitialPageInfo(newInfo.pages[location])
-    setButtonDisabled(true);
+    setPageInfo(newInfo)
   }
 
   const publish = async () => {
     setLoading(true);
     const updated = await publishPageInfo(pageInfo, location);
     updateState(updated);
+    setButtonDisabled(true);
     setLoading(false);
   }
-
+  const currentPage = (pageInfo && pageInfo.pages && pageInfo.pages[location]) ? pageInfo.pages[location] : {};
   return (
     <>
-      <AppBar>
-        <Button disabled={buttonDisabled} onClick={publish}>
-          {loading ? <CircularProgress size="small" /> : 'Publish' }
-        </Button>
-      </AppBar>
       <Box style={backgroundStyle} >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%', justifyContent: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center' }}>
               <TextField
+                variant="filled"
                 label="Title"
-                value={pageInfo['title']}
+                value={currentPage['title']}
                 onChange={updatePageInfo('title')}
               />
               <TextField
+                variant="filled"
                 label="Subtitle"
-                value={pageInfo['subtitle']}
+                value={currentPage['subtitle']}
                 onChange={updatePageInfo('subtitle')}
               />
             </div>
@@ -103,17 +102,86 @@ const Page = (props) => {
       </Box>
       <Box style={fadeStyle} />
       <NestlierBar pages={pages}/>
-      {(pageInfo.content || []).map(c => {
+      <AppBar position="sticky" color="default">
+        <Toolbar style={{ justifyContent: 'flex-end' }}>
+          <DeletePage {...{pageInfo, updateState, location, publish}} />
+          <AddPage {...{pageInfo, updateState}} />
+          <Button disabled={buttonDisabled} onClick={publish} variant="contained" color="primary" >
+            {loading ? <CircularProgress size="small" /> : 'Publish' }
+          </Button>
+        </Toolbar>
+      </AppBar>
+      {(currentPage.content || []).map(c => {
         return (
-          <Content key={c.name} name={c.name} location={location} onDelete={updatePageInfo('content')} pageInfo={pageInfo} />
+          <Content key={c.name} name={c.name} location={location} onDelete={updatePageInfo('content')} currentPage={currentPage} />
         )
       })}
-      <AddContentButton pageInfo={pageInfo} onChange={updatePageInfo('content')} location={location} />
+      <AddContentButton currentPage={currentPage} onChange={updatePageInfo('content')} location={location} />
     </>
   );
 }
 
-export const AddContentButton = ({pageInfo, onChange, location}) => {
+export const AddPage = ({ pageInfo, updateState }) => {
+  const defaultValue = { name: '', subtitle: '', title: '', url: '', content: [] };
+  const [dialog, setDialog] = React.useState(false);
+
+  const createPage = () => {
+    const newPageInfo = { ...pageInfo };
+    newPageInfo.pages[defaultValue.name] = defaultValue;
+    updateState(newPageInfo);
+    triggerDialog();
+  }
+  const changeVal = (e) => {
+    defaultValue.url = `/${(e.target.value).replace(' ', '')}`
+    defaultValue.name = e.target.value;
+  }
+  const triggerDialog = () => {
+    setDialog(!dialog);
+  }
+  return (
+    <>
+      <Button onClick={triggerDialog}>
+        Create New Page
+      </Button>
+      <Dialog open={dialog} onClose={triggerDialog}>
+        <TextField label="title" onChange={changeVal}/>
+        <Button disabled={defaultValue.name} onClick={triggerDialog}>Cancel</Button>
+        <Button disabled={defaultValue.name} onClick={createPage}>Enter</Button>
+      </Dialog>
+    </>
+  )
+}
+export const DeletePage = ({ pageInfo, updateState, location, publish }) => {
+  const [dialog, setDialog] = React.useState(false);
+
+  const createPage = async () => {
+    const newPageInfo = { ...pageInfo };
+    Object.keys(pageInfo.pages).forEach(p => {
+      if (p === location) {
+        delete pageInfo.pages[p];
+      }
+    });
+    await updateState(newPageInfo);
+    await publish();
+  }
+  const triggerDialog = () => {
+    setDialog(!dialog);
+  }
+  return (
+    <>
+      <Button onClick={triggerDialog} color="error" >
+        Remove This Page
+      </Button>
+      <Dialog open={dialog} onClose={triggerDialog}>
+        <Typography>Are you sure you want to delete??</Typography>
+        <Button onClick={triggerDialog}>No</Button>
+        <Button  onClick={createPage}>Yes</Button>
+      </Dialog>
+    </>
+  )
+}
+
+export const AddContentButton = ({currentPage, onChange, location}) => {
 
   const [addContentOpen, setAddContentOpen] = React.useState(false);
   const [name, setName] = React.useState('');
@@ -127,8 +195,8 @@ export const AddContentButton = ({pageInfo, onChange, location}) => {
   }
 
   const addContent = async () => {
-    pageInfo.content.push({ name })
-    const e = { target: { value: pageInfo.content } }
+    currentPage.content.push({ name })
+    const e = { target: { value: currentPage.content } }
     await createContent(location, name);
     onChange(e);
     toggleAddContent();
