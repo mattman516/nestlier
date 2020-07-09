@@ -10,6 +10,11 @@
             "StackName": "amplify-nestlier-dev-82904",
             "StackId": "arn:aws:cloudformation:us-east-1:172885992056:stack/amplify-nestlier-dev-82904/73502b30-c04d-11ea-92ff-12305fa4f4bd",
             "AmplifyAppId": "d3anfs6omjp1av"
+        },
+        "categories": {
+            "auth": {
+                "nestlier70ec4e87": {}
+            }
         }
     }
 }
