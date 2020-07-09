@@ -23,7 +23,7 @@ const titleWrap = {
   justifyContent: 'center',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
-  backgroundSize: '800px 180px',
+  backgroundSize: '800px 200px',
   backgroundColor: theme.palette.background.default,
 }
 
@@ -107,30 +107,28 @@ export const Header = (props) => {
           <EditIcon fontSize="small"/>
         </IconButton>
         <Box >
-          <Box >
-            <Typography
-              className="animate__animated animate__backInDown"
-              variant="h1"
-              color="primary"
-            >
-            {pageInfo.title}
-            </Typography>
-            {pageInfo.subtitle && ( 
-              <>
-                <Box 
-                  className="animate__animated animate__backInDown"
-                  style={{ height: 2, background: theme.palette.primary.main }}
-                />
-                <Typography
-                  className="animate__animated animate__backInDown"
-                  variant="h2"
-                  color="primary"
-                >
-                  {pageInfo.subtitle}
-                </Typography>
-              </>
-            )}
-          </Box>
+          <Typography
+            className="animate__animated animate__backInDown"
+            variant="h1"
+            color="primary"
+          >
+          {pageInfo.title}
+          </Typography>
+          {pageInfo.subtitle && ( 
+            <>
+              <Box 
+                className="animate__animated animate__backInDown"
+                style={{ height: 2, background: theme.palette.primary.main }}
+              />
+              <Typography
+                className="animate__animated animate__backInDown"
+                variant="h2"
+                color="primary"
+              >
+                {pageInfo.subtitle}
+              </Typography>
+            </>
+          )}
         </Box>
         <AppBar pages={pages}/>
       </Box>

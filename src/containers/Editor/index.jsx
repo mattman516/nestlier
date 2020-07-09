@@ -28,7 +28,7 @@ const backgroundStyle = (image) => ({
   backgroundImage: `url(${image})`,
 
   /* Full height */
-  height: '100vh',
+  height: '70vh',
 
   /* Center and scale the image nicely */
   backgroundPosition: 'center',
@@ -105,40 +105,21 @@ const Page = (props) => {
   return (
     <>
       <AmplifySignOut/>
-      <Box style={backgroundStyle(img)} >
-        <IconButton
-          size="small"
-          style={{ position: 'absolute', top: 0, right: 0 }}
-          onClick={navigateView}
-        >
-          <ViewIcon fontSize="small"/>
-        </IconButton>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <TextField
-                variant="filled"
-                label="Title"
-                value={currentPage['title']}
-                onChange={updatePageInfo('title')}
-              />
-              <TextField
-                variant="filled"
-                label="Subtitle"
-                value={currentPage['subtitle']}
-                onChange={updatePageInfo('subtitle')}
-              />
-              <ImageUploader
-                withIcon={true}
-                buttonText="Choose Image"
-                onChange={changeImg}
-                imgExtension={['.jpg', '.png']}
-                maxFileSize={5242880}
-              />
-            </div>
-        </div>
+      <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <TextField
+          style={{ width: 500 }}
+          label="Title"
+          value={currentPage['title']}
+          onChange={updatePageInfo('title')}
+        />
+        <TextField
+          style={{ width: 500 }}
+          label="Subtitle"
+          value={currentPage['subtitle']}
+          onChange={updatePageInfo('subtitle')}
+        />
+        <NestlierBar pages={pages}/>
       </Box>
-      <Box style={fadeStyle} />
-      <NestlierBar pages={pages}/>
       <AppBar position="sticky" color="default">
         <Toolbar style={{ justifyContent: 'flex-end' }}>
           <DeletePage {...{pageInfo, updateState, location, publish}} />
@@ -148,6 +129,26 @@ const Page = (props) => {
           </Button>
         </Toolbar>
       </AppBar>
+      <Box style={backgroundStyle(img)} >
+        <IconButton
+          size="small"
+          style={{ position: 'absolute', top: 0, right: 0 }}
+          onClick={navigateView}
+        >
+          <ViewIcon fontSize="small"/>
+        </IconButton>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%', justifyContent: 'center' }}>
+          <ImageUploader
+            style={{ width: 300 }}
+            withIcon={true}
+            buttonText="Choose Image"
+            onChange={changeImg}
+            imgExtension={['.jpg', '.png']}
+            maxFileSize={5242880}
+          />
+        </div>
+      </Box>
+      <Box style={fadeStyle} />
       {(currentPage.content || []).map(c => {
         return (
           <Content key={c.name} name={c.name} location={location} onDelete={updatePageInfo('content')} currentPage={currentPage} />
