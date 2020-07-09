@@ -1,10 +1,12 @@
 import React from 'react';
 import Content from '../ContentEditor';
-import image from '../../nestlier1.jpg';
+import defaultImage from '../../nestlier1.jpg';
 import NestlierBar from '../../components/AppBar';
 import { getPageInfo } from './getPageInfo';
 import { publishPageInfo } from './updatePageInfo';
 import { createContent } from './createContent';
+import ViewIcon from '@material-ui/icons/Search';
+import ImageUploader from 'react-images-upload';
 import {
   DialogActions,
   Button,
@@ -15,10 +17,13 @@ import {
   AppBar,
   Toolbar,
   Typography,
+  IconButton,
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { Storage } from 'aws-amplify';
 
-const backgroundStyle = {
+const backgroundStyle = (image) => ({
   /* The image used */
   backgroundImage: `url(${image})`,
 
@@ -30,7 +35,7 @@ const backgroundStyle = {
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
   backgroundAttachment: 'fixed',
-};
+});
 
 const fadeStyle = {
   backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(250,250,250,1))',
@@ -45,6 +50,7 @@ const Page = (props) => {
   const [pageInfo, setPageInfo] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  const [img, setImg] = React.useState(defaultImage);
 
 
   React.useEffect(() => {
@@ -64,12 +70,14 @@ const Page = (props) => {
     setPageInfo(newPageInfo);
   }
 
-  const updateState = (newInfo) => {
+  const updateState = async (newInfo) => {
     setButtonDisabled(false);
     let pages = Object.keys(newInfo.pages).map(p => newInfo.pages[p]);
     pages = pages.map(p => ({ ...p, url: `/edit${p.url}` }))
+    const img = await Storage.get(`${location}backgroundImage`);
     setPages(pages);
-    setPageInfo(newInfo)
+    setPageInfo(newInfo);
+    setImg(img);
   }
 
   const publish = async () => {
@@ -79,10 +87,32 @@ const Page = (props) => {
     setButtonDisabled(true);
     setLoading(false);
   }
+  const navigateView = () => {
+    props.history.push(`/page/${location}`);
+  }
+  const changeImg = async (picture,a,b,c) => {
+    console.log(picture,a,b,c);
+    try {
+      const x = await Storage.put(`${location}backgroundImage`, picture[0] );
+      updateState(pageInfo);
+    } catch (e) {
+      console.error(e);
+    }
+
+    
+  }
   const currentPage = (pageInfo && pageInfo.pages && pageInfo.pages[location]) ? pageInfo.pages[location] : {};
   return (
     <>
-      <Box style={backgroundStyle} >
+      <AmplifySignOut/>
+      <Box style={backgroundStyle(img)} >
+        <IconButton
+          size="small"
+          style={{ position: 'absolute', top: 0, right: 0 }}
+          onClick={navigateView}
+        >
+          <ViewIcon fontSize="small"/>
+        </IconButton>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%', justifyContent: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center' }}>
               <TextField
@@ -96,6 +126,13 @@ const Page = (props) => {
                 label="Subtitle"
                 value={currentPage['subtitle']}
                 onChange={updatePageInfo('subtitle')}
+              />
+              <ImageUploader
+                withIcon={true}
+                buttonText="Choose Image"
+                onChange={changeImg}
+                imgExtension={['.jpg', '.png']}
+                maxFileSize={5242880}
               />
             </div>
         </div>
@@ -219,5 +256,5 @@ export const AddContentButton = ({currentPage, onChange, location}) => {
   )
 }
 
-export default withRouter(Page);
+export default withAuthenticator(withRouter(Page));
         
