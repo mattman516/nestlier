@@ -1,8 +1,10 @@
 import React from 'react';
 import Content from '../Content';
 import defaultImage from '../../nestlier1.jpg';
+import titleImage from '../../prettyBackground.png';
 import AppBar from '../../components/AppBar';
 import { getPageInfo } from './getPageInfo';
+import theme from '../../theme';
 import {
   Typography,
   Box,
@@ -12,12 +14,25 @@ import EditIcon from '@material-ui/icons/Edit'
 import { withRouter } from 'react-router-dom';
 import { Storage } from 'aws-amplify';
 
+const titleWrap = {
+  backgroundImage: `url(${titleImage})`,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  width: '100%',
+  justifyContent: 'center',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: '800px 180px',
+  backgroundColor: theme.palette.background.default,
+}
+
 const backgroundStyle = (image) => ({
   /* The image used */
   backgroundImage: `url(${image})`,
 
   /* Full height */
-  height: '100vh',
+  height: '60vh',
 
   /* Center and scale the image nicely */
   backgroundPosition: 'center',
@@ -31,6 +46,12 @@ const fadeStyle = {
   marginTop: -80,
   marginBottom: 5,
   height: 80, 
+};
+const fadeStyleReverse = {
+  background: 'transparent',
+  backgroundImage: 'linear-gradient(to top, rgba(255,255,255,0), rgba(250,250,250,1))',
+  height: 80,
+  marginBottom: -80,
 };
 
 const Page = (props) => {
@@ -52,14 +73,32 @@ const Page = (props) => {
     setImg(img);
     setPageInfo(info.pages[location])
   }
+
+  return (
+    <>
+      <Header {...props} pageInfo={pageInfo} pages={pages} />
+      <Box style={fadeStyleReverse}/>
+      <Box style={backgroundStyle(img)} />
+      <Box style={fadeStyle} />
+      {(pageInfo.content || []).map(c => {
+        return (
+          <Content key={c.name} name={c.name} location={location} />
+        )
+      })}
+    </>
+  );
+}
+
+export const Header = (props) => {
+
+  const { pageInfo, pages } = props;
+  const { location } = props.match.params;
   
   const navigateEdit = () => {
     props.history.push(`/edit/${location}`)
   }
-
   return (
-    <>
-      <Box style={backgroundStyle(img)} >
+      <Box style={titleWrap} >
         <IconButton
           size="small"
           style={{ position: 'absolute', top: 0, right: 0 }}
@@ -67,41 +106,34 @@ const Page = (props) => {
         >
           <EditIcon fontSize="small"/>
         </IconButton>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', width: '100%', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Typography
-                className="animate__animated animate__backInDown"
-                variant="h1"
-                color="primary"
-              >
-              {pageInfo.title}
-              </Typography>
-              {pageInfo.subtitle && ( 
-                <>
-                  <Box 
-                    className="animate__animated animate__backInDown"
-                    style={{ height: 2, background: 'white' }}
-                  />
-                  <Typography
-                    className="animate__animated animate__backInDown"
-                    variant="h2"
-                    color="primary"
-                  >
-                    {pageInfo.subtitle}
-                  </Typography>
-                </>
-              )}
-            </div>
-        </div>
+        <Box >
+          <Box >
+            <Typography
+              className="animate__animated animate__backInDown"
+              variant="h1"
+              color="primary"
+            >
+            {pageInfo.title}
+            </Typography>
+            {pageInfo.subtitle && ( 
+              <>
+                <Box 
+                  className="animate__animated animate__backInDown"
+                  style={{ height: 2, background: theme.palette.primary.main }}
+                />
+                <Typography
+                  className="animate__animated animate__backInDown"
+                  variant="h2"
+                  color="primary"
+                >
+                  {pageInfo.subtitle}
+                </Typography>
+              </>
+            )}
+          </Box>
+        </Box>
+        <AppBar pages={pages}/>
       </Box>
-      <Box style={fadeStyle} />
-      <AppBar pages={pages}/>
-      {(pageInfo.content || []).map(c => {
-        return (
-          <Content key={c.name} name={c.name} location={location} />
-        )
-      })}
-    </>
   );
 }
 

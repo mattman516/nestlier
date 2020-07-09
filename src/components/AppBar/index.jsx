@@ -1,6 +1,5 @@
 import React from 'react';
   import {
-    Typography,
     AppBar,
     Toolbar,
     Button,
@@ -19,7 +18,7 @@ function SpecialAppBar(props) {
     return (
       <>
         <AppBar position="sticky" elevation={0} >
-          <Toolbar>
+          <Toolbar >
             <SpecialMenu {...props} />
           </Toolbar>
         </AppBar>
