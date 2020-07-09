@@ -164,7 +164,7 @@ export const AddPage = ({ pageInfo, updateState }) => {
 
   const createPage = () => {
     const newPageInfo = { ...pageInfo };
-    newPageInfo.pages[defaultValue.name] = defaultValue;
+    newPageInfo.pages[defaultValue.name.replace(' ', '')] = defaultValue;
     updateState(newPageInfo);
     triggerDialog();
   }

@@ -41,6 +41,14 @@ const theme = createMuiTheme({
       root: {
         margin: 2,
       }
+    },
+    MuiAppBar: {
+      colorPrimary: {
+        backgroundColor: 'rgb(250, 250, 250)',
+        borderStyle: 'none none solid none',
+        borderWidth: 5,
+        borderColor: '#FFEC8B',
+      }
     }
   }
 });

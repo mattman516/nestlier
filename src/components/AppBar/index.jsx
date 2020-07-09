@@ -19,8 +19,7 @@ function SpecialAppBar(props) {
     return (
       <>
         <AppBar position="sticky" elevation={0} >
-          <Toolbar style={{ justifyContent: 'space-between' }}>
-            <Typography variant="h6" >{title}</Typography>
+          <Toolbar>
             <SpecialMenu {...props} />
           </Toolbar>
         </AppBar>
@@ -42,7 +41,7 @@ function SpecialAppBar(props) {
     return (
       <>
         <Hidden smDown={true}>
-          <Box>
+          <Box style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             {pages.map(p => {
               return (
                 <Button key={p.url} onClick={menuChange(p.url)}>{p.name}</Button>
@@ -51,7 +50,7 @@ function SpecialAppBar(props) {
           </Box>
         </Hidden>
         <Hidden mdUp={true} >
-          <Box>
+          <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
             <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={menuTrigger}>
               <MenuIcon />
             </IconButton>
