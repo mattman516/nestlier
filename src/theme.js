@@ -9,6 +9,7 @@ export default createMuiTheme({
       fontSize: 16,
       h1: {
         fontWeight: 300,
+        lineHeight: 1,
         fontSize: 60,
         textAlign: 'center',
       },
@@ -19,6 +20,9 @@ export default createMuiTheme({
       },
       h3: {
         fontSize: 40,
+      },
+      button: {
+        textTransform: 'none',
       }
     },
     palette: {

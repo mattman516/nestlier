@@ -23,7 +23,7 @@ const titleWrap = {
   justifyContent: 'center',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
-  backgroundSize: '800px 200px',
+  backgroundSize: '960px 240px',
   backgroundColor: theme.palette.background.default,
 }
 
@@ -106,13 +106,13 @@ export const Header = (props) => {
         >
           <EditIcon fontSize="small"/>
         </IconButton>
-        <Box >
+        <Box style={{ margin: 20 }}>
           <Typography
             className="animate__animated animate__backInDown"
             variant="h1"
             color="primary"
           >
-          {pageInfo.title}
+            {pageInfo.title}
           </Typography>
           {pageInfo.subtitle && ( 
             <>
