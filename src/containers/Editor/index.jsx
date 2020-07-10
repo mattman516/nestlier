@@ -91,9 +91,8 @@ const Page = (props) => {
     props.history.push(`/page/${location}`);
   }
   const changeImg = async (picture,a,b,c) => {
-    console.log(picture,a,b,c);
     try {
-      const x = await Storage.put(`${location}backgroundImage`, picture[0] );
+      await Storage.put(`${location}backgroundImage`, picture[0] );
       updateState(pageInfo);
     } catch (e) {
       console.error(e);

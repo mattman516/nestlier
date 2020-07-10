@@ -14,7 +14,6 @@ import React from 'react';
 
 
 function SpecialAppBar(props) {
-    const { title = "Nestlier" } = props;
     return (
       <>
         <AppBar position="sticky" elevation={0} >

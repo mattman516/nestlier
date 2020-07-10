@@ -10,13 +10,14 @@ const Content = ({ name, location }) => {
   const [contentValue, setContentValue] = React.useState('');
 
   React.useEffect(() => {
-    fetch();
-  }, []);
 
-  const fetch = async () => {
-    const x = await getContent(name, location);
-    setContentValue(x.value);
-  }
+    const fetch = async () => {
+      const x = await getContent(name, location);
+      setContentValue(x.value);
+    }
+
+    fetch();
+  }, [name, location]);
 
   return (
     <Paper style={{ maxWidth: 1200, margin: 'auto', padding: 20, marginTop: 20 }}>

@@ -18,14 +18,15 @@ const ContentEditorContainer = ({ name, location, onDelete, currentPage }) => {
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
-    fetch();
-  }, []);
 
-  const fetch = async () => {
-    const initial = await getContent(name, location) || {};
-    setInitialContent(initial)
-    setContent(initial);
-  }
+    const fetch = async () => {
+      const initial = await getContent(name, location) || {};
+      setInitialContent(initial)
+      setContent(initial);
+    }
+
+    fetch();
+  }, [name, location]);
 
   const publish = async () => {
     setLoading(true);
